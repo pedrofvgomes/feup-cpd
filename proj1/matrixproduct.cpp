@@ -130,7 +130,50 @@ void OnMultLine(int m_ar, int m_br) {
 // add code here for block x block matriz multiplication
 void OnMultBlock(int m_ar, int m_br, int bkSize)
 {
+    // parameter validation
+    if(!(bkSize <= m_ar && bkSize <= m_br)){
+        printf("Invalid block size - it has to be less than or equal to the matrix dimensions!");
+        exit(1);
+    }
+    
+    SYSTEMTIME Time1, Time2;
 
+    char st[100];
+    double temp;
+    int i, j, k;
+
+    double *pha, *phb, *phc;
+
+    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    phb = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phc = (double *)malloc((m_ar * m_br) * sizeof(double));
+
+    // initialize matrix a - identity
+    for (i = 0; i < m_ar; i++)
+        for (j = 0; j < m_br; j++)
+            pha[i * m_ar + j] = (double)1.0;
+
+    // initialize matrix b - each row is filled with its index + 1
+    for (i = 0; i < m_ar; i++)
+        for (j = 0; j < m_br; j++)
+            phb[i * m_br + j] = (double)(i + 1); 
+
+    // initialize matrix c - result matrix with every element as 0
+    for (i = 0; i < m_ar; i++)
+        for (j = 0; j < m_br; j++)
+            phc [i*m_ar + j] = (double)0.0;
+
+    Time1 = clock();
+
+    for(i=0; i<m_ar; i+=bkSize)
+        for(j=0; j<m_br; j+=bkSize){
+            // horizontal remaining block
+            if(i + bkSize > m_ar){
+                int width = m_ar - i;
+                // TODO: height
+            }
+
+        }
 }
 
 
