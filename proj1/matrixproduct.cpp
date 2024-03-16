@@ -176,6 +176,58 @@ void OnMultBlock(int m_ar, int m_br, int bkSize)
     free(phc); 
 }
 
+void OnMultLineP1(int m_ar, int m_br) {
+    SYSTEMTIME Time1, Time2;
+
+    char st[100];
+    double temp;
+    int i, j, k;
+
+    double *pha, *phb, *phc;
+
+    pha = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phb = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phc = (double *)malloc((m_ar * m_br) * sizeof(double));
+
+    // initialize matrix a - identity
+    for (i = 0; i < m_ar; i++)
+        for (j = 0; j < m_br; j++)
+            pha[i * m_ar + j] = (double)1.0;
+
+    // initialize matrix b - each row is filled with its index + 1
+    for (i = 0; i < m_ar; i++)
+        for (j = 0; j < m_br; j++)
+            phb[i * m_br + j] = (double)(i + 1); 
+
+    Time1 = clock();
+    double start = omp_get_wtime();
+
+    #pragma omp parallel for private(i,j,k)
+    for(i=0; i<m_ar; i++)
+        for(j=0; j<m_br; j++)
+            for(k=0; k<m_ar; k++)
+                phc[i*m_ar + k] += pha[i*m_ar + j] * phb[j*m_br + k];
+    
+    double end = omp_get_wtime();
+    printf("OMP time - %f seconds\n", end-start);
+    Time2 = clock();
+    sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
+    cout << st;
+
+    // display 10 elements of the result matrix to verify correctness
+    cout << "Result matrix: " << endl;
+    for (i = 0; i < min(10, m_ar * m_br); i++) {
+        cout << phc[i] << " ";
+        if ((i + 1) % m_br == 0)
+            cout << endl;
+    }
+    cout << endl;
+
+    free(pha);
+    free(phb);
+    free(phc);
+
+}
 
 
 void handle_error (int retval)
