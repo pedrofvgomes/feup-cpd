@@ -23,9 +23,9 @@ void OnMult(int m_ar, int m_br)
 
 
 
-    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
-    phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
-    phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    pha = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phb = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phc = (double *)malloc((m_ar * m_br) * sizeof(double));
 
     for(i=0; i<m_ar; i++)
         for(j=0; j<m_ar; j++)
@@ -82,9 +82,9 @@ void OnMultLine(int m_ar, int m_br) {
 
     double *pha, *phb, *phc;
 
-    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
-    phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
-    phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    pha = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phb = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phc = (double *)malloc((m_ar * m_br) * sizeof(double));
 
     // initialize matrix a - identity
     for (i = 0; i < m_ar; i++)
@@ -139,9 +139,9 @@ void OnMultBlock(int m_ar, int m_br, int bkSize)
 
     double *pha, *phb, *phc;
 
-    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
-    phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
-    phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    pha = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phb = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phc = (double *)malloc((m_ar * m_br) * sizeof(double));
 
     // initialize matrix a - identity
     for (i = 0; i < m_ar; i++)
@@ -177,7 +177,7 @@ void OnMultBlock(int m_ar, int m_br, int bkSize)
 }
 
 void OnMultLineP1(int m_ar, int m_br) {
-    SYSTEMTIME Time1, Time2;
+    /*SYSTEMTIME Time1, Time2;
 
     char st[100];
     double temp;
@@ -226,7 +226,61 @@ void OnMultLineP1(int m_ar, int m_br) {
     free(pha);
     free(phb);
     free(phc);
+    */
+}
 
+void OnMultLineP2(int m_ar, int m_br) {
+    /*SYSTEMTIME Time1, Time2;
+
+    char st[100];
+    double temp;
+    int i, j, k;
+
+    double *pha, *phb, *phc;
+
+    pha = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phb = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phc = (double *)malloc((m_ar * m_br) * sizeof(double));
+
+    // initialize matrix a - identity
+    for (i = 0; i < m_ar; i++)
+        for (j = 0; j < m_br; j++)
+            pha[i * m_ar + j] = (double)1.0;
+
+    // initialize matrix b - each row is filled with its index + 1
+    for (i = 0; i < m_ar; i++)
+        for (j = 0; j < m_br; j++)
+            phb[i * m_br + j] = (double)(i + 1); 
+
+    Time1 = clock();
+    double start = omp_get_wtime();
+
+    #pragma omp parallel for private(i,k,j)
+    for(i=0; i<m_ar; i++)
+        for(j=0; j<m_ar; j++)
+            #pragma omp for
+            for(k=0; k<m_br; k++)
+                phc[i*m_ar + k] += pha[i*m_ar + j] * phb[j*m_br + k];
+    
+    double end = omp_get_wtime();
+    printf("OMP time - %f seconds\n", end-start);
+    Time2 = clock();
+    sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
+    cout << st;
+
+    // display 10 elements of the result matrix to verify correctness
+    cout << "Result matrix: " << endl;
+    for (i = 0; i < min(10, m_ar * m_br); i++) {
+        cout << phc[i] << " ";
+        if ((i + 1) % m_br == 0)
+            cout << endl;
+    }
+    cout << endl;
+
+    free(pha);
+    free(phb);
+    free(phc);
+*/
 }
 
 
@@ -284,6 +338,8 @@ int main (int argc, char *argv[])
         cout << endl << "1. Multiplication" << endl;
         cout << "2. Line Multiplication" << endl;
         cout << "3. Block Multiplication" << endl;
+        cout << "4. Parallel Line Multiplication [1]" << endl;
+        cout << "5. Parallel Line Multiplication [2]" << endl;
         cout << "Selection?: ";
         cin >>op;
         if (op == 0)
@@ -309,7 +365,12 @@ int main (int argc, char *argv[])
                 cin >> blockSize;
                 OnMultBlock(lin, col, blockSize);
                 break;
-
+            case 4:
+                OnMultLineP1(lin, col);
+                break;
+            case 5:
+                OnMultLineP2(lin, col);
+                break;
         }
 
         ret = PAPI_stop(EventSet, values);
