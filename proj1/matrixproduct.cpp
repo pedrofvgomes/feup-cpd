@@ -83,8 +83,8 @@ void OnMultLine(int m_ar, int m_br) {
     double *pha, *phb, *phc;
 
     pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
-    phb = (double *)malloc((m_ar * m_br) * sizeof(double));
-    phc = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
 
     // initialize matrix a - identity
     for (i = 0; i < m_ar; i++)
@@ -96,17 +96,12 @@ void OnMultLine(int m_ar, int m_br) {
         for (j = 0; j < m_br; j++)
             phb[i * m_br + j] = (double)(i + 1); 
 
-    // initialize matrix c - result matrix with every element as 0
-    for (i = 0; i < m_ar; i++)
-        for (j = 0; j < m_br; j++)
-            phc [i*m_ar + j] = (double)0.0;
-
     Time1 = clock();
 
     for(i=0; i<m_ar; i++)
         for(j=0; j<m_br; j++)
-            if(i == j)
-                phc[i*m_ar + j] = (double)((i+1)*m_br);
+            for(k=0; k<m_ar; k++)
+                phc[i*m_ar + k] += pha[i*m_ar + j] * phb[j*m_br + k];
 
     Time2 = clock();
     sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
