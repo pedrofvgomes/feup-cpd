@@ -77,7 +77,6 @@ void OnMultLine(int m_ar, int m_br) {
     SYSTEMTIME Time1, Time2;
 
     char st[100];
-    double temp;
     int i, j, k;
 
     double *pha, *phb, *phc;
