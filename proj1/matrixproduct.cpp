@@ -158,22 +158,27 @@ void OnMultBlock(int m_ar, int m_br, int bkSize)
         for (j = 0; j < m_br; j++)
             phb[i * m_br + j] = (double)(i + 1); 
 
-    // initialize matrix c - result matrix with every element as 0
-    for (i = 0; i < m_ar; i++)
-        for (j = 0; j < m_br; j++)
-            phc [i*m_ar + j] = (double)0.0;
-
     Time1 = clock();
 
-    for(i=0; i<m_ar; i+=bkSize)
-        for(j=0; j<m_br; j+=bkSize){
-            // horizontal remaining block
-            if(i + bkSize > m_ar){
-                int width = m_ar - i;
-                // TODO: height
-            }
+    for(int a = 0; a<m_ar; a+=bkSize) for(int b = 0; b< m_br; b+=bkSize)
+            for(int c = 0; c<m_ar; c+=bkSize) for(int d = 0; d<bkSize; d++)
+                    for(int e=0; e<bkSize; e++) for(int f=0; j<bkSize; j++)
+                            phc[(a+d)*m_ar+b+f] += pha[(a+d)*m_ar+c+e] * phb[(c+e)*m_br+b+f];    
 
-        }
+    Time2 = clock();
+
+    sprintf(st, "Time: %3.3f seconds\n", (double)(Time2-Time1)/CLOCKS_PER_SEC);
+    cout << st;
+
+    // display 10 elements of the result matrix to verify correctness
+    cout << "Result matrix:" << endl;
+
+    for(i = 0; i<min(10, m_br); j++) cout << phc[j] << " ";
+    cout << endl;
+
+    free(pha): 
+    free(phb): 
+    free(phc): 
 }
 
 
