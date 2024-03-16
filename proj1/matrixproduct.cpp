@@ -145,24 +145,24 @@ void OnMultBlock(int m_ar, int m_br, int bkSize)
     double *pha, *phb, *phc;
 
     pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
-    phb = (double *)malloc((m_ar * m_br) * sizeof(double));
-    phc = (double *)malloc((m_ar * m_br) * sizeof(double));
+    phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
+    phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
 
     // initialize matrix a - identity
     for (i = 0; i < m_ar; i++)
-        for (j = 0; j < m_br; j++)
+        for (j = 0; j < m_ar; j++)
             pha[i * m_ar + j] = (double)1.0;
 
     // initialize matrix b - each row is filled with its index + 1
-    for (i = 0; i < m_ar; i++)
+    for (i = 0; i < m_br; i++)
         for (j = 0; j < m_br; j++)
-            phb[i * m_br + j] = (double)(i + 1); 
+            phb[i * m_br + j] = (double)(i+1); 
 
     Time1 = clock();
 
     for(int a = 0; a<m_ar; a+=bkSize) for(int b = 0; b< m_br; b+=bkSize)
             for(int c = 0; c<m_ar; c+=bkSize) for(int d = 0; d<bkSize; d++)
-                    for(int e=0; e<bkSize; e++) for(int f=0; j<bkSize; j++)
+                    for(int e=0; e<bkSize; e++) for(int f=0; f<bkSize; f++)
                             phc[(a+d)*m_ar+b+f] += pha[(a+d)*m_ar+c+e] * phb[(c+e)*m_br+b+f];    
 
     Time2 = clock();
@@ -173,12 +173,12 @@ void OnMultBlock(int m_ar, int m_br, int bkSize)
     // display 10 elements of the result matrix to verify correctness
     cout << "Result matrix:" << endl;
 
-    for(i = 0; i<min(10, m_br); j++) cout << phc[j] << " ";
+    for(i = 0; i<min(10, m_br); i++) cout << phc[i] << " ";
     cout << endl;
 
-    free(pha): 
-    free(phb): 
-    free(phc): 
+    free(pha);
+    free(phb); 
+    free(phc); 
 }
 
 
