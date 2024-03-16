@@ -4,19 +4,34 @@ import java.util.Scanner;
 
 public class MatrixProduct {
     public static void main(String[] args) {
-        // get m_ar and m_br through input
+        int choice;
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Enter the number of rows and columns: ");
-        int m_ar = scanner.nextInt();
+        do{
+            System.out.println("1. Multiplication\n2. Line Multiplication\n3. Block Multiplication");
+            System.out.print("Selection?: ");
+            choice = scanner.nextInt();
+
+            if(choice == 0) break;
+
+            System.out.print("Enter the number of rows and columns: ");
+            int m_ar = scanner.nextInt();
+
+            MatrixProduct mp = new MatrixProduct();
+
+            switch (choice) {
+                case 1:
+                    mp.onMult(m_ar, m_ar);
+                    break;
+                case 2:
+                    mp.onMultLine(m_ar, m_ar);
+                default:
+                    break;
+            }
+
+        }while(choice!=0);
 
         scanner.close();
-
-        // create an instance of the class
-        MatrixProduct mp = new MatrixProduct();
-
-        // call the method to perform the multiplication
-        mp.onMult(m_ar, m_ar);
     }
 
     public void onMult(int m_ar, int m_br) {
